@@ -1,18 +1,18 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <reo-file-selector ref="selector">
+      <button slot="trigger" @click="$refs.selector.trigger()">Select Files</button>
+    </reo-file-selector>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+
+import ReoFileSelector from '@/components/ReoFileSelector'
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  }
+  components: { ReoFileSelector }
 }
 </script>
 
@@ -23,6 +23,8 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  padding: 40px;
+  height: 100vh;
+  width: 100vw;
 }
 </style>
