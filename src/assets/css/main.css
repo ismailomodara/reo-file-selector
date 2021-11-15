@@ -1,0 +1,40 @@
+@font-face {
+    font-family: 'Calibre';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../fonts/Calibre-Medium.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Calibre';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/Calibre-Regular.woff') format('woff');
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-size: 15px;
+    font-family: 'Calibre', sans-serif;
+    scroll-behavior: smooth;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+p {
+    margin: 0;
+}

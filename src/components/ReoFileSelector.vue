@@ -3,9 +3,22 @@
     <slot name="trigger" />
     <div v-if="open" class="reo-selector">
       <div class="reo-selector__header">
-        <span @click="back">Back</span>
-        <h3>Title</h3>
-        <span @click="close">X</span>
+        <div class="reo-selector__header--navigator">
+          <span
+            v-if="data.length"
+            class="action"
+            @click="back">
+           <img :src="getImage('back.svg')" alt="<" />
+          </span>
+          <p
+            :style="{ marginLeft: data.length ? '' : '12px' }">
+            {{ currentFolder.title }}</p>
+        </div>
+        <span
+          class="action"
+          @click="close">
+          <img :src="getImage('close.svg')" alt="X" />
+        </span>
       </div>
       <reo-file-selector-list
         :folders="currentFolder.folders"
@@ -40,13 +53,16 @@ export default {
       const dataLength = this.data.length
 
       if (dataLength) {
+        const data = this.data[dataLength - 1]
         return {
-          folders: this.data[dataLength - 1].folders,
-          files: this.data[dataLength - 1].files
+          title: data.name,
+          folders: data.folders,
+          files: data.files
         }
       }
 
       return {
+        title: 'Account Name',
         folders,
         files
       }
@@ -72,14 +88,14 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .selector {
   position: relative;
   text-align: left;
 }
 
 .reo-selector {
-  padding: 16px;
+  padding: 8px;
   width: 420px;
   height: 380px;
   background: #ffffff;
@@ -88,18 +104,57 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-}
 
-.reo-selector__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
 
-.reo-selector__footer {
-  height: 64px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
+    &--navigator {
+      display: flex;
+      align-items: center;
+
+      span {
+        margin-right: 4px;
+      }
+    }
+
+    span {
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: transparent;
+      transition: background 0.3s ease-in;
+
+      img {
+        height: 14px;
+        width: auto;
+      }
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.04);
+        transition: background 0.25s ease-in;
+      }
+    }
+
+    p {
+      font-family: 'Calibre', sans-serif;
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: 500;
+      color: #262626;
+      margin: 8px 0 0 4px;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
 }
 </style>
