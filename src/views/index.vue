@@ -1,9 +1,6 @@
 <template>
   <div class="home">
-    <reo-file-selector
-      :ref="'selector'"
-      :selected-files="files"
-      @update="update">
+    <reo-file-selector :ref="'selector'" @update="update">
       <reo-button slot="trigger" @click="$refs.selector.open()">Select Files</reo-button>
     </reo-file-selector>
     <div v-if="files.length" class="files-list">
@@ -27,7 +24,13 @@ export default {
   },
   methods: {
     update (files) {
-      this.files = files
+      /**
+       * Update the selected files list with new selections and eliminate duplicates
+       */
+      files.forEach(file => {
+        this.files.push(file)
+      })
+      this.files = [...new Set(this.files)];
     }
   }
 }

@@ -19,4 +19,10 @@ export default {
   height: 100vh;
   width: 100vw;
 }
+
+@media (max-width: 600px) {
+  #app {
+    padding: 10px;
+  }
+}
 </style>

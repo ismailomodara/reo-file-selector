@@ -5,28 +5,23 @@
       <div v-if="showSelector" class="reo-selector">
         <div class="reo-selector__header">
           <div class="reo-selector__header--navigator">
-          <span
-            v-if="!baseFolder"
-            class="action"
-            @click="navigateToFolder('backward')">
-           <img :src="getImage('arrow-left.svg')" alt="<" />
-          </span>
-            <p
-              :style="{ marginLeft: baseFolder? '12px' : '' }">
-              {{ currentFolder.title }}</p>
+            <reo-icon
+              v-if="!baseFolder"
+              :icon="'arrow-left'"
+              @click="navigateToFolder('backward')">
+
+            </reo-icon>
+            <p>{{ currentFolder.title }}</p>
           </div>
-          <span
-            class="action"
-            @click="close">
-          <img :src="getImage('close.svg')" alt="X" />
-        </span>
+          <reo-icon :icon="'close'" @click="close" />
         </div>
         <reo-file-selector-list
           :folders="currentFolder.folders"
           :files="currentFolder.files"
           :selections.sync="selections"
           @navigate="navigateToFolder($event, 'forward')"
-          @select="selectFile" />
+          @select="selectFile">
+        </reo-file-selector-list>
         <div class="reo-selector__footer">
           <reo-button
             :type="selections.length ? 'primary' : 'disabled'"
@@ -40,20 +35,15 @@
 
 <script>
 import mock from '@/components/mock'
+
 import ReoFileSelectorList from '@/components/ReoFileSelectorList'
 import ReoButton from '@/components/ReoButton'
+import ReoIcon from '@/components/ReoIcon'
 
 export default {
 	name: 'ReoFileSelector',
-  props: {
-    selectedFiles: {
-      type: Array,
-      default() {
-        return []
-      }
-    }
-  },
 	components: {
+    ReoIcon,
 	  ReoButton,
     ReoFileSelectorList
   },
@@ -77,7 +67,7 @@ export default {
 				return {
 					title: data.name,
 					folders: data.folders,
-					files: data.files
+					files: data.files.filter(file => this.getSupportedFileFormat().includes(this.getFileType(file.url)))
 				}
 			}
 
@@ -88,19 +78,17 @@ export default {
 			}
 		}
 	},
-  watch: {
-    showSelector () {
-      if(this.showSelector) {
-        this.selections = [...this.selectedFiles]
-      }
-    }
-  },
 	methods: {
 		open () {
 			this.showSelector = true
 		},
 		close () {
+      /**
+       * Close the Selector, Reset folder navigations and clear all selections
+       */
 			this.showSelector = false
+      this.navigationData = []
+      this.selections = []
 		},
     navigateToFolder (folder, action) {
 			action === 'forward' ? this.navigationData.push(folder) : this.navigationData.pop()
@@ -122,7 +110,6 @@ export default {
 <style lang="scss">
 .selector {
   position: relative;
-  text-align: left;
 }
 
 .reo-selector {
@@ -148,27 +135,10 @@ export default {
 
       span {
         margin-right: 4px;
-      }
-    }
 
-    span {
-      padding: 8px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      background: transparent;
-      transition: background 0.3s ease-in;
-
-      img {
-        height: 20px;
-        width: auto;
-      }
-
-      &:hover {
-        background: rgba(0, 0, 0, 0.04);
-        transition: background 0.25s ease-in;
+        + p {
+          margin-left: 0;
+        }
       }
     }
 
@@ -178,7 +148,7 @@ export default {
       line-height: 24px;
       font-weight: 500;
       color: #262626;
-      margin: 5px 0 0 4px;
+      margin: 5px 0 0 12px;
     }
   }
 
@@ -188,6 +158,20 @@ export default {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .selector {
+    width: 100%;
+    text-align: center;
+
+    .reo-selector {
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 96%;
+    }
   }
 }
 </style>
