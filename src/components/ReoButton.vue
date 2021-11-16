@@ -6,20 +6,20 @@
 
 <script>
 export default {
-  name: 'ReoButton',
-  props: {
-    type: {
-      type: String,
-      default: 'primary'
-    }
-  },
-  data () {
-    return {}
-  }
+	name: 'ReoButton',
+	props: {
+		type: {
+			type: String,
+			default: 'primary'
+		}
+	},
+	data () {
+		return {}
+	}
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .reo-button {
   padding: 10px 16px;
   font-size: 14px;
@@ -38,6 +38,7 @@ export default {
   &.primary {
     border-color: #1890FF;
     background: #1890FF;
+		transition: all 0.25s ease-in;
   }
 
   &.disabled {
@@ -45,6 +46,7 @@ export default {
     border-color: #D9D9D9;
     background: #F5F5F5;
     cursor: not-allowed;
+		transition: all 0.25s ease-in;
   }
 }
 </style>

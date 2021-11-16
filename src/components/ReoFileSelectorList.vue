@@ -15,7 +15,7 @@
       v-for="file in files"
       :key="file.id"
       class="selector-list__item"
-      @click="select(file)">
+      @click="action(file)">
       <div>
         <span class="image">
           <img v-if="file.mimeType.includes('image')" :src="getFileImage(file.url)" alt="D" class="full-image" />
@@ -23,7 +23,10 @@
         </span>
         <p>{{ file.name }}</p>
       </div>
-      <span><img :src="getImage('selected.svg')" alt=">" /> </span>
+      <span
+        v-if="selectedFilesId.includes(file.id)">
+        <img :src="getImage('selected.svg')" alt=">" />
+      </span>
     </li>
   </ul>
 </template>
@@ -31,38 +34,57 @@
 <script>
 
 export default {
-  name: 'ReoFileSelectorList',
-  props: {
-    folders: {
+	name: 'ReoFileSelectorList',
+	props: {
+    selections: {
       type: Array,
       default () {
         return []
       }
     },
-    files: {
-      type: Array,
-      default () {
-        return []
-      }
+		folders: {
+			type: Array,
+			default () {
+				return []
+			}
+		},
+		files: {
+			type: Array,
+			default () {
+				return []
+			}
+		}
+	},
+	data () {
+		return {}
+	},
+	computed: {
+	  selectedFilesId () {
+      return this.selections.map(selection => selection.id)
     },
-    selected: {
-      type: Array,
-      default () {
-        return []
-      }
+		updateSelectedFiles: {
+			get () {
+				return this.selections
+			},
+			set (value) {
+				this.$emit('update:selections', value)
+			}
+		}
+	},
+	methods: {
+		navigate (data) {
+			this.$emit('navigate', data)
+		},
+		action (file) {
+		  this.selectedFilesId.includes(file.id) ? this.removeFile(file.id) : this.addFile(file)
+		},
+    addFile (file) {
+      this.updateSelectedFiles.push(file)
+    },
+    removeFile (fileId) {
+      this.updateSelectedFiles = this.updateSelectedFiles.filter(file => file.id !== fileId)
     }
-  },
-  data () {
-    return {}
-  },
-  methods: {
-    navigate (data) {
-      this.$emit('navigate', data)
-    },
-    select (data) {
-      this.$emit('select', data)
-    }
-  }
+	}
 }
 </script>
 

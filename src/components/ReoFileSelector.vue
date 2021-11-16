@@ -2,7 +2,7 @@
   <div class="selector">
     <slot name="trigger" />
     <transition name="fade" mode="out-in">
-      <div v-if="open" class="reo-selector">
+      <div v-if="showSelector" class="reo-selector">
         <div class="reo-selector__header">
           <div class="reo-selector__header--navigator">
           <span
@@ -24,11 +24,11 @@
         <reo-file-selector-list
           :folders="currentFolder.folders"
           :files="currentFolder.files"
-          :selected="selected"
-          @navigate="setCurrentFolder"
+          :selections.sync="selections"
+          @navigate="setSelectedFolder"
           @select="setSelectedFile" />
         <div class="reo-selector__footer">
-          <reo-button type="disabled">Select X Files</reo-button>
+          <reo-button :type="selections.length ? 'primary' : 'disabled'" @click="addFiles">Select {{ selections.length ? selections.length : '' }} files</reo-button>
         </div>
       </div>
     </transition>
@@ -41,53 +41,79 @@ import ReoFileSelectorList from '@/components/ReoFileSelectorList'
 import ReoButton from '@/components/ReoButton'
 
 export default {
-  name: 'ReoFileSelector',
-  components: { ReoButton, ReoFileSelectorList },
-  data () {
-    return {
-      open: false,
-      data: [],
-      selected: []
-    }
-  },
-  computed: {
-    currentFolder () {
-      const { folders, files } = mock
-      const dataLength = this.data.length
-
-      if (dataLength) {
-        const data = this.data[dataLength - 1]
-        return {
-          title: data.name,
-          folders: data.folders,
-          files: data.files
-        }
-      }
-
-      return {
-        title: 'Account Name',
-        folders,
-        files
+	name: 'ReoFileSelector',
+  props: {
+    selectedFiles: {
+      type: Array,
+      default() {
+        return []
       }
     }
   },
-  methods: {
-    trigger () {
-      this.open = true
-    },
-    close () {
-      this.open = false
-    },
-    setCurrentFolder (folder) {
-      this.data.push(folder)
-    },
-    setSelectedFile (file) {
-      this.selected.push(file)
-    },
-    back () {
-      this.data.pop()
+	components: {
+	  ReoButton,
+    ReoFileSelectorList
+  },
+	data () {
+		return {
+			showSelector: false,
+			data: [],
+      selections: []
+		}
+	},
+	computed: {
+		currentFolder () {
+			const { folders, files } = mock
+			const dataLength = this.data.length
+
+			if (dataLength) {
+				const data = this.data[dataLength - 1]
+				return {
+					title: data.name,
+					folders: data.folders,
+					files: data.files
+				}
+			}
+
+			return {
+				title: 'Account Name',
+				folders,
+				files
+			}
+		}
+	},
+  watch: {
+    showSelector () {
+      if(this.showSelector) {
+        this.selections = this.selectedFiles;
+      }
     }
-  }
+  },
+	methods: {
+		open () {
+			this.showSelector = true
+		},
+		close () {
+			this.showSelector = false
+			this.selections = []
+		},
+    setSelectedFolder (folder) {
+			this.data.push(folder)
+		},
+		setSelectedFile (file) {
+			this.selections.push(file)
+		},
+		back () {
+			this.data.pop()
+		},
+		addFiles () {
+			const files = this.selections
+			if (files.length) {
+				this.$emit('update', files)
+			}
+			this.close()
+		}
+	}
 }
 </script>
 
