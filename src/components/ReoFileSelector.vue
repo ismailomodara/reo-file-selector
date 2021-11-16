@@ -6,13 +6,13 @@
         <div class="reo-selector__header">
           <div class="reo-selector__header--navigator">
           <span
-            v-if="data.length"
+            v-if="!baseFolder"
             class="action"
-            @click="back">
+            @click="navigateToFolder('backward')">
            <img :src="getImage('arrow-left.svg')" alt="<" />
           </span>
             <p
-              :style="{ marginLeft: data.length ? '' : '12px' }">
+              :style="{ marginLeft: baseFolder? '12px' : '' }">
               {{ currentFolder.title }}</p>
           </div>
           <span
@@ -25,10 +25,13 @@
           :folders="currentFolder.folders"
           :files="currentFolder.files"
           :selections.sync="selections"
-          @navigate="setSelectedFolder"
-          @select="setSelectedFile" />
+          @navigate="navigateToFolder($event, 'forward')"
+          @select="selectFile" />
         <div class="reo-selector__footer">
-          <reo-button :type="selections.length ? 'primary' : 'disabled'" @click="addFiles">Select {{ selections.length ? selections.length : '' }} files</reo-button>
+          <reo-button
+            :type="selections.length ? 'primary' : 'disabled'"
+            @click="addFiles">Select {{ selections.length ? selections.length : '' }} files
+          </reo-button>
         </div>
       </div>
     </transition>
@@ -57,17 +60,20 @@ export default {
 	data () {
 		return {
 			showSelector: false,
-			data: [],
+			navigationData: [],
       selections: []
 		}
 	},
 	computed: {
+	  baseFolder () {
+	    return this.navigationData.length === 0
+    },
 		currentFolder () {
 			const { folders, files } = mock
-			const dataLength = this.data.length
+			const dataLength = this.navigationData.length
 
 			if (dataLength) {
-				const data = this.data[dataLength - 1]
+				const data = this.navigationData[dataLength - 1]
 				return {
 					title: data.name,
 					folders: data.folders,
@@ -76,7 +82,7 @@ export default {
 			}
 
 			return {
-				title: 'Account Name',
+				title: 'Torstraße 145, 39481 Nürnberg',
 				folders,
 				files
 			}
@@ -85,7 +91,7 @@ export default {
   watch: {
     showSelector () {
       if(this.showSelector) {
-        this.selections = this.selectedFiles;
+        this.selections = [...this.selectedFiles]
       }
     }
   },
@@ -95,23 +101,19 @@ export default {
 		},
 		close () {
 			this.showSelector = false
-			this.selections = []
 		},
-    setSelectedFolder (folder) {
-			this.data.push(folder)
+    navigateToFolder (folder, action) {
+			action === 'forward' ? this.navigationData.push(folder) : this.navigationData.pop()
 		},
-		setSelectedFile (file) {
+    selectFile (file) {
 			this.selections.push(file)
-		},
-		back () {
-			this.data.pop()
 		},
 		addFiles () {
 			const files = this.selections
 			if (files.length) {
 				this.$emit('update', files)
+        this.close()
 			}
-			this.close()
 		}
 	}
 }
