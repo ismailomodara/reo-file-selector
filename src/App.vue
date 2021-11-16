@@ -22,6 +22,7 @@ export default {
 
 @media (max-width: 600px) {
   #app {
+    height: auto;
     padding: 10px;
   }
 }

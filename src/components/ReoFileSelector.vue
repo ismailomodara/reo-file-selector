@@ -34,8 +34,6 @@
 </template>
 
 <script>
-import mock from '@/components/mock'
-
 import ReoFileSelectorList from '@/components/ReoFileSelectorList'
 import ReoButton from '@/components/ReoButton'
 import ReoIcon from '@/components/ReoIcon'
@@ -49,6 +47,7 @@ export default {
   },
 	data () {
 		return {
+		  data: [],
 			showSelector: false,
 			navigationData: [],
       selections: []
@@ -59,7 +58,7 @@ export default {
 	    return this.navigationData.length === 0
     },
 		currentFolder () {
-			const { folders, files } = mock
+			const { folders, files } = this.data
 			const dataLength = this.navigationData.length
 
 			if (dataLength) {
@@ -72,13 +71,28 @@ export default {
 			}
 
 			return {
-				title: 'Torstraße 145, 39481 Nürnberg',
+				title: 'Home Folder',
 				folders,
 				files
 			}
 		}
 	},
-	methods: {
+  created () {
+	  this.getData()
+  },
+  methods: {
+    async getData () {
+      const API_URL = 'https://api-dev.reo.so/api/folderStructure'
+      const dataResponse = await fetch(API_URL, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      if (dataResponse.status === 200) {
+        this.data = await dataResponse.json()
+      }
+    },
 		open () {
 			this.showSelector = true
 		},
