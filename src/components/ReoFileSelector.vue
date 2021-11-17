@@ -77,8 +77,12 @@ export default {
 			}
 		}
 	},
-  created () {
-	  this.getData()
+  watch: {
+    showSelector() {
+      if(this.showSelector) {
+        this.getData()
+      }
+    }
   },
   methods: {
     async getData () {
