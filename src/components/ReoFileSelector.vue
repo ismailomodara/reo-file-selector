@@ -24,7 +24,7 @@
         </reo-file-selector-list>
         <div class="reo-selector__footer">
           <reo-button
-            :type="selections.length ? 'primary' : 'disabled'"
+            :disabled="!selections.length"
             @click="addFiles">Select {{ selections.length ? selections.length : '' }} files
           </reo-button>
         </div>

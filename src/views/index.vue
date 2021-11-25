@@ -4,8 +4,10 @@
       <reo-button slot="trigger" @click="$refs.selector.open()">Select Files</reo-button>
     </reo-file-selector>
     <div v-if="files.length" class="files-list">
-      <p>Files selected</p>
-      <p v-for="i in files" :key="i.id">{{ i.name }}</p>
+      <h3>Files selected</h3>
+      <ul>
+        <li v-for="i in files" :key="i.id">{{ i.name }}</li>
+      </ul>
     </div>
   </div>
 </template>
@@ -49,22 +51,28 @@ export default {
 .files-list {
   margin-top: 30px;
 
-  p {
-    font-size: 18px;
-    font-weight: 400;
-    line-height: 1.4;
-    margin-top: 0;
-    width: 350px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  h3 {
+    font-weight: 500;
+  }
 
-    &:first-child {
-      font-weight: 500;
-    }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 
-    &:not(:last-child) {
-      margin-bottom: 13px;
+    li {
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.4;
+      margin-top: 0;
+      width: 350px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      &:not(:last-child) {
+        margin-bottom: 13px;
+      }
     }
   }
 }

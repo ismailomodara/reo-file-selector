@@ -1,7 +1,7 @@
 <template>
-  <div class="reo-button" :class="type" @click="$emit('click')">
+  <button :class="['reo-button', type, { disabled: disabled }]" @click="$emit('click')" :disabled="disabled">
     <slot />
-  </div>
+  </button>
 </template>
 
 <script>
@@ -11,6 +11,10 @@ export default {
 		type: {
 			type: String,
 			default: 'primary'
+		},
+		disabled: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data () {
